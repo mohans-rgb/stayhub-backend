@@ -10,10 +10,13 @@ import com.StayHub.StayHub.entity.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -200,6 +203,83 @@ public class BookingServiceImpl implements BookingService {
         }
     }
     @Override
+    @Transactional
+    public BookingResponseDTO cancelBooking(Long bookingId) {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        User currentUser =
+                (User) authentication.getPrincipal();
+
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Booking not found with id: "
+                                        + bookingId));
+
+        if (!booking.getCustomer().getId()
+                .equals(currentUser.getId())) {
+
+            throw new BadRequestException(
+                    "You cannot cancel another user's booking");
+        }
+
+        if (booking.getBookingStatus()
+                == BookingStatus.CANCELLED) {
+
+            throw new BadRequestException(
+                    "Booking already cancelled");
+        }
+
+        if (booking.getBookingStatus()
+                == BookingStatus.EXPIRED) {
+
+            throw new BadRequestException(
+                    "Booking already expired");
+        }
+
+        List<Inventory> inventories =
+                inventoryRepository.findByRoomIdAndDateBetween(
+                        booking.getRoom().getId(),
+                        booking.getFromDate(),
+                        booking.getToDate().minusDays(1)
+                );
+
+        if (booking.getBookingStatus()
+                == BookingStatus.RESERVED) {
+
+            for (Inventory inventory : inventories) {
+
+                inventory.setReservedCount(
+                        inventory.getReservedCount()
+                                - booking.getRoomsCount());
+            }
+        }
+
+        if (booking.getBookingStatus()
+                == BookingStatus.CONFIRMED) {
+
+            for (Inventory inventory : inventories) {
+
+                inventory.setBookedCount(
+                        inventory.getBookedCount()
+                                - booking.getRoomsCount());
+            }
+        }
+
+        inventoryRepository.saveAll(inventories);
+
+        booking.setBookingStatus(
+                BookingStatus.CANCELLED);
+
+        bookingRepository.save(booking);
+
+        return modelMapper.map(
+                booking,
+                BookingResponseDTO.class);
+    }
+    @Override
     public List<BookingResponseDTO> getMyBookings() {
 
         Authentication authentication =
@@ -214,6 +294,7 @@ public class BookingServiceImpl implements BookingService {
                 .map(this::mapToBookingResponse)
                 .toList();
     }
+
 
     @Override
     public BookingResponseDTO getBookingById(Long bookingId) {
@@ -241,6 +322,8 @@ public class BookingServiceImpl implements BookingService {
 
         return mapToBookingResponse(booking);
     }
+
+
 
     private BookingResponseDTO mapToBookingResponse(Booking booking) {
 
