@@ -1,5 +1,6 @@
-package com.StayHub.StayHub.entity;
+package com.StayHub.StayHub.Dto;
 
+import com.StayHub.StayHub.entity.Room;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,42 +11,31 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity
 @Getter
 @Setter
-public class Inventory {
+public class InventoryResponse {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long roomId;
 
-    @ManyToOne
     private Room room;
 
-    @Column(nullable = false)
     private LocalDate date;
 
-    @Column(nullable = false)
     private BigDecimal price;
 
-    @Column(nullable = false)
     private Boolean closed;
 
-    @Column(nullable = false)
     private Integer totalCount;
 
-    @Column(nullable = false)
     private Integer bookedCount;
 
-    @Column(nullable = false)
     private Integer reservedCount;
 
-    @CreationTimestamp
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private Integer availableRooms;
 
-    @UpdateTimestamp
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
+    private Boolean available;
+
 }
+

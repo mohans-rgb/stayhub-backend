@@ -5,6 +5,8 @@ import com.StayHub.StayHub.Dto.UserLoginResponse;
 import com.StayHub.StayHub.Dto.UserResponseDto;
 import com.StayHub.StayHub.Dto.UserSignUpRequest;
 import com.StayHub.StayHub.Enums.Role;
+import com.StayHub.StayHub.Exception.BadRequestException;
+import com.StayHub.StayHub.Exception.ResourceNotFoundException;
 import com.StayHub.StayHub.Repository.UserRepository;
 import com.StayHub.StayHub.Security.JwtService;
 import com.StayHub.StayHub.entity.User;
@@ -26,8 +28,9 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto signUp( UserSignUpRequest userSignUpRequest) {
         boolean emailExists = userRepository.existsByEmail(userSignUpRequest.getEmail());
         if(emailExists){
-            throw new RuntimeException("Email id already exists ");
-        }
+            throw new BadRequestException(
+                    "Email already exists"
+            );        }
         User signUpUser =modelMapper.map(userSignUpRequest,User.class);
         signUpUser.setRole(Role.CUSTOMER);
         signUpUser.setPassword(passwordEncoder.encode(userSignUpRequest.getPassword()));
@@ -39,12 +42,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserLoginResponse login(UserLoginRequest userLoginRequest) {
-        User user = userRepository.findByEmail(userLoginRequest.getEmail()).orElseThrow();
-        boolean isValid =passwordEncoder.matches(userLoginRequest.getPassword(), user.getPassword());
-        if(!isValid) throw  new RuntimeException();
+
+        User user = userRepository
+                .findByEmail(userLoginRequest.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found" +  userLoginRequest.getEmail()));
+
+        boolean isValid =
+                passwordEncoder.matches(
+                        userLoginRequest.getPassword(),
+                        user.getPassword());
+
+        if(!isValid) {
+            throw new BadRequestException(
+                    "Invalid password"
+            );        }
+
         String token = jwtService.generateToken(user);
-        UserLoginResponse userLoginResponse= new UserLoginResponse();
+
+        UserLoginResponse userLoginResponse = new UserLoginResponse();
         userLoginResponse.setToken(token);
+
         return userLoginResponse;
     }
 }

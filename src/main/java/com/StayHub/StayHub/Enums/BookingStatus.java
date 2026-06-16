@@ -1,7 +1,7 @@
 package com.StayHub.StayHub.Enums;
 
 public enum BookingStatus {
-    PENDING,
+    RESERVED,
     CONFIRMED,
-    CANCELLED
+    EXPIRED
 }

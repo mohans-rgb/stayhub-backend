@@ -17,6 +17,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table(name="users")
 public class User  implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +42,9 @@ public class User  implements UserDetails{
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @OneToMany
+    private List<Guest> guest;
 
 
     @Override

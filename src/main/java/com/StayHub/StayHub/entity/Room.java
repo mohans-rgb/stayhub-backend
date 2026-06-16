@@ -4,8 +4,12 @@ import com.StayHub.StayHub.Enums.RoomType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,15 +34,23 @@ public class Room {
     @Column(nullable = false)
     private String roomDescription;
 
-    private String[] images;
+    private List<String> images;
 
     @Column(nullable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     @Column(nullable = false)
+    private  Integer totalCount;
+
+    @Column(nullable = false)
     private Integer maxCapacity;
+
+    @Column(nullable = false)
+    private BigDecimal pricePerNight;
 
 }

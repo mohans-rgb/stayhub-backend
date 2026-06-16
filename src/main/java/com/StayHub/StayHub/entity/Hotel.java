@@ -6,8 +6,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,19 +28,26 @@ public class Hotel {
     @ManyToOne
     private User hotelManager;
 
+    @OneToMany(mappedBy = "hotel")
+    private List<Room> rooms;
+
     @Embedded
     private ContactDetails contactDetails;
 
     @Column(nullable = false)
     private String description;
 
-    private String[] amenities;
+    @ElementCollection
+    private List<String> amenities;
 
-    private String[] images;
+    @ElementCollection
+    private List<String> images;
 
     @Column(nullable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 }

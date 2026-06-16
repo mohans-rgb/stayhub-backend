@@ -20,7 +20,7 @@ public class JwtService {
     private String secret;
 
     @Value("${jwt.expiration}")
-    private String expiration;
+    private long expiration;
 
     private Key getSignKey(){
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
