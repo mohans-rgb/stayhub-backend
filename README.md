@@ -65,19 +65,10 @@ Completed
 * Spring Data JPA
 * Hibernate ORM
 
-## In Progress
+
 
 * End-to-End API Testing
 * Bug Fixes and Refinements
 * Project Documentation
 
-## Future Enhancements
-
-* Payment Gateway Integration
-* Email Notifications
-* AI-Powered Hotel Recommendations
-* Natural Language Hotel Search
-* Docker Deployment
-* Cloud Deployment (AWS/GCP)
-* Review & Rating System
 
