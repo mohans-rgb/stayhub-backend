@@ -1,5 +1,4 @@
 
-Readme · MD
 # StayHub — Hotel Booking Backend
  
 A production-ready RESTful backend for a hotel booking platform, built with **Spring Boot 4.1** and **Java 21**. StayHub handles the full guest lifecycle — from hotel discovery and room availability to payment processing and booking management — with role-based access control and dynamic pricing baked in.
