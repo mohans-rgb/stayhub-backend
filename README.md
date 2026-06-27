@@ -7,7 +7,6 @@ It is built using **Spring Boot** and includes authentication, booking managemen
 
 
 
-<img width="832" height="863" alt="image" src="https://github.com/user-attachments/assets/d6d0e75d-b4ae-4947-984f-306469a40e06" />
 
 
 ##  Features
