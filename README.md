@@ -34,7 +34,7 @@ Implements Strategy Design Pattern:
 - Occupancy-based pricing
 - Urgency-based pricing
 
-### 📦 System Design Concepts
+###  System Design Concepts
 - Clean layered architecture (Controller → Service → Repository)
 - DTO-based communication
 - Strategy Design Pattern for pricing logic
