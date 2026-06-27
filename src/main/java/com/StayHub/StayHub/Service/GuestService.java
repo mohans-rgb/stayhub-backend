@@ -1,18 +1,20 @@
 package com.StayHub.StayHub.Service;
 
-import com.StayHub.StayHub.Dto.GuestCreateRequest;
-import com.StayHub.StayHub.Dto.GuestCreatedResponse;
+import com.StayHub.StayHub.DTO.GuestDto;
+
 import com.StayHub.StayHub.entity.Guest;
 
 import java.util.List;
 
 public interface GuestService {
 
-    GuestCreatedResponse createGuest(GuestCreateRequest guestCreateRequest);
 
-    List<GuestCreatedResponse> getAllGuests();
+    List<GuestDto> getAllGuests();
 
-    GuestCreatedResponse getGuestById(Long guestId);
+    void updateGuest(Long guestId, GuestDto guestDto);
 
-    void deleteGuestById(Long guestId);
+    void deleteGuest(Long guestId);
+
+    GuestDto addNewGuest(GuestDto guestDto);
+
 }

@@ -1,14 +1,19 @@
 package com.StayHub.StayHub.Service;
 
-import com.StayHub.StayHub.Dto.UserLoginRequest;
-import com.StayHub.StayHub.Dto.UserLoginResponse;
-import com.StayHub.StayHub.Dto.UserResponseDto;
-import com.StayHub.StayHub.Dto.UserSignUpRequest;
+import com.StayHub.StayHub.DTO.ProfileUpdateRequestDto;
+import com.StayHub.StayHub.DTO.UserDto;
+import com.StayHub.StayHub.entity.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UserService {
 
 
-    UserResponseDto signUp(UserSignUpRequest userSignUpRequest);
 
-    UserLoginResponse login(UserLoginRequest userLoginRequest);
+    User getUserById(Long id);
+
+    void updateProfile(ProfileUpdateRequestDto profileUpdateRequestDto);
+
+    UserDto getMyProfile();
+
+    UserDetails loadUserByUsername(String username);
 }

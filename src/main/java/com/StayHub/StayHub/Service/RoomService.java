@@ -1,18 +1,23 @@
 package com.StayHub.StayHub.Service;
 
-import com.StayHub.StayHub.Dto.RoomCreateRequest;
-import com.StayHub.StayHub.Dto.RoomResponseDto;
-import com.StayHub.StayHub.Dto.RoomUpdateRequest;
+import com.StayHub.StayHub.DTO.RoomDto;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface RoomService {
-    RoomResponseDto createRoom(Long id, RoomCreateRequest roomCreateRequest);
-    RoomResponseDto getRoom(Long id,Long hotelId);
-    Page<RoomResponseDto> getAllRooms(Long hotelId, Pageable pageable);
-    RoomResponseDto updateRoomById(Long hotelId, Long roomId, RoomUpdateRequest roomUpdateRequest);
-    void deleteRoomById(Long hotelId, Long roomId);
+
+    RoomDto createNewRoom(Long hotelId, RoomDto roomDto);
+
+    List<RoomDto> getAllRoomsInHotel(Long hotelId);
+
+    RoomDto getRoomById(Long roomId);
+
+    void deleteRoomById(Long roomId);
+
+    RoomDto updateRoomById(Long hotelId, Long roomId, RoomDto roomDto);
 
 }

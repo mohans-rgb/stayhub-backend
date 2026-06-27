@@ -1,17 +1,35 @@
 package com.StayHub.StayHub.Service;
 
-import com.StayHub.StayHub.Dto.BookingRequest;
-import com.StayHub.StayHub.Dto.BookingResponseDTO;
+import com.StayHub.StayHub.DTO.BookingDto;
+import com.StayHub.StayHub.DTO.BookingRequest;
+import com.StayHub.StayHub.DTO.HotelReportDto;
 
+import com.StayHub.StayHub.Enums.BookingStatus;
+import com.StayHub.StayHub.entity.Booking;
+import com.stripe.model.Event;
+
+import java.time.LocalDate;
 import java.util.List;
 
 public interface BookingService {
 
-    BookingResponseDTO initialiseBooking(BookingRequest bookingRequest);
-    BookingResponseDTO confirmBooking(Long bookingId);
+    BookingDto initialiseBooking(BookingRequest bookingRequest);
 
-    List<BookingResponseDTO> getMyBookings();
+    BookingDto addGuests(Long bookingId, List<Long> guestIdList);
 
-    BookingResponseDTO getBookingById(Long bookingId);
-    BookingResponseDTO cancelBooking(Long bookingId);
+    String initiatePayments(Long bookingId);
+
+    void capturePayment(Event event);
+
+    void cancelBooking(Long bookingId);
+
+    BookingStatus getBookingStatus(Long bookingId);
+
+    List<BookingDto> getAllBookingsByHotelId(Long hotelId);
+
+    HotelReportDto getHotelReport(Long hotelId, LocalDate startDate, LocalDate endDate);
+
+    List<BookingDto> getMyBookings();
+
+
 }

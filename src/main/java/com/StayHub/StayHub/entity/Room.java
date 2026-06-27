@@ -15,42 +15,38 @@ import java.util.List;
 @Getter
 @Setter
 public class Room {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private RoomType roomType;
+    private String type;
 
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal basePrice;
+
+    @Column(columnDefinition = "TEXT[]")
+    private String[] photos;
+
+    @Column(columnDefinition = "TEXT[]")
+    private String[] amenities;
 
     @Column(nullable = false)
-    private String bedInfo;
+    private Integer totalCount;
 
     @Column(nullable = false)
-    private String roomDescription;
+    private Integer capacity;
 
-    private List<String> images;
-
-    @Column(nullable = false)
     @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-    @Column(nullable = false)
-    private  Integer totalCount;
-
-    @Column(nullable = false)
-    private Integer maxCapacity;
-
-    @Column(nullable = false)
-    private BigDecimal pricePerNight;
 
 }

@@ -1,9 +1,10 @@
 package com.StayHub.StayHub.Service;
 
-import com.StayHub.StayHub.Dto.HotelResponseDto;
-import com.StayHub.StayHub.Dto.HotelSearchResponseDto;
-import com.StayHub.StayHub.Dto.InventoryResponse;
-import com.StayHub.StayHub.Dto.InventoryUpdateRequest;
+import com.StayHub.StayHub.DTO.HotelPriceResponseDto;
+import com.StayHub.StayHub.DTO.HotelSearchRequest;
+import com.StayHub.StayHub.DTO.InventoryDto;
+import com.StayHub.StayHub.DTO.UpdateInventoryRequestDto;
+
 import com.StayHub.StayHub.entity.Hotel;
 import com.StayHub.StayHub.entity.Inventory;
 import com.StayHub.StayHub.entity.Room;
@@ -15,17 +16,15 @@ import java.util.List;
 
 public interface InventoryService {
 
-     void generateInventoryForRoom(Room room);
 
-     List<InventoryResponse> findByRoomIdAndDateBetween(Long roomId, LocalDate startDate, LocalDate endDate);
-     List<InventoryResponse> updateInventoryById(Long roomId, LocalDate startDate , LocalDate endDate, InventoryUpdateRequest inventoryUpdateRequest);
+     void initializeRoomForAYear(Room room);
 
-     //Page<HotelResponseDto> searchHotel(String city, LocalDate fromDate, LocalDate toDate, Integer roomCount, Pageable pageable);
-     Page<HotelSearchResponseDto> searchHotel(
-             String city,
-             LocalDate fromDate,
-             LocalDate toDate,
-             Integer roomCount,
-             Pageable pageable
-     );
+     void deleteAllInventories(Room room);
+
+     Page<HotelPriceResponseDto> searchHotels(HotelSearchRequest hotelSearchRequest);
+
+     List<InventoryDto> getAllInventoryByRoom(Long roomId);
+
+     void updateInventory(Long roomId, UpdateInventoryRequestDto updateInventoryRequestDto);
+
 }

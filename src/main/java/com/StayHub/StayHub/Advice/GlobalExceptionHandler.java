@@ -3,9 +3,12 @@ package com.StayHub.StayHub.Advice;
 
 import com.StayHub.StayHub.Exception.BadRequestException;
 import com.StayHub.StayHub.Exception.ResourceNotFoundException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,54 +21,51 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse<?>> handleResourceNotFound(ResourceNotFoundException exception) {
         ApiError apiError = ApiError.builder()
-                .httpStatus(HttpStatus.NOT_FOUND)
-                .errorMessage(exception.getMessage())
+                .status(HttpStatus.NOT_FOUND)
+                .message(exception.getMessage())
                 .build();
         return buildErrorResponseEntity(apiError);
     }
 
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ApiResponse<?>> handleBadRequest(
-            BadRequestException exception) {
-
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiResponse<?>> handleAuthenticationException(AuthenticationException ex) {
         ApiError apiError = ApiError.builder()
-                .httpStatus(HttpStatus.BAD_REQUEST)
-                .errorMessage(exception.getMessage())
+                .status(HttpStatus.UNAUTHORIZED)
+                .message(ex.getMessage())
                 .build();
-
         return buildErrorResponseEntity(apiError);
     }
-    @ExceptionHandler(Exception.class)
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ApiResponse<?>> handleJwtException(JwtException ex) {
+        ApiError apiError = ApiError.builder()
+                .status(HttpStatus.UNAUTHORIZED)
+                .message(ex.getMessage())
+                .build();
+        return buildErrorResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<?>> handleAccessDeniedException(AccessDeniedException ex) {
+        ApiError apiError = ApiError.builder()
+                .status(HttpStatus.FORBIDDEN)
+                .message(ex.getMessage())
+                .build();
+        return buildErrorResponseEntity(apiError);
+    }
+
+    //    @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> handleInternalServerError(Exception exception) {
         ApiError apiError = ApiError.builder()
-                .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-                .errorMessage(exception.getMessage())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .message(exception.getMessage())
                 .build();
         return buildErrorResponseEntity(apiError);
-    }
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Void>> handleMethodArgumentNotValidException(
-            MethodArgumentNotValidException ex) {
-
-        List<String> validationErrors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(error -> error.getField() + " : " + error.getDefaultMessage())
-                .toList();
-
-        ApiError apiError = ApiError.builder()
-                .httpStatus(HttpStatus.BAD_REQUEST)
-                .errorMessage("Validation Failed")
-                .subErrors(validationErrors)
-                .build();
-
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ApiResponse<>(apiError));
     }
 
     private ResponseEntity<ApiResponse<?>> buildErrorResponseEntity(ApiError apiError) {
-        return new ResponseEntity<>(new ApiResponse<>(apiError), apiError.getHttpStatus());
+        return new ResponseEntity<>(new ApiResponse<>(apiError), apiError.getStatus());
     }
 
 }
+

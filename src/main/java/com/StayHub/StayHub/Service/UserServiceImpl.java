@@ -1,67 +1,53 @@
 package com.StayHub.StayHub.Service;
 
-import com.StayHub.StayHub.Dto.UserLoginRequest;
-import com.StayHub.StayHub.Dto.UserLoginResponse;
-import com.StayHub.StayHub.Dto.UserResponseDto;
-import com.StayHub.StayHub.Dto.UserSignUpRequest;
-import com.StayHub.StayHub.Enums.Role;
-import com.StayHub.StayHub.Exception.BadRequestException;
+import com.StayHub.StayHub.DTO.ProfileUpdateRequestDto;
+import com.StayHub.StayHub.DTO.UserDto;
 import com.StayHub.StayHub.Exception.ResourceNotFoundException;
 import com.StayHub.StayHub.Repository.UserRepository;
-import com.StayHub.StayHub.Security.JwtService;
 import com.StayHub.StayHub.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import static com.StayHub.StayHub.Util.AppUtils.getCurrentUser;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
-    private final JwtService jwtService;
 
-    private final PasswordEncoder passwordEncoder;
     @Override
-    public UserResponseDto signUp( UserSignUpRequest userSignUpRequest) {
-        boolean emailExists = userRepository.existsByEmail(userSignUpRequest.getEmail());
-        if(emailExists){
-            throw new BadRequestException(
-                    "Email already exists"
-            );        }
-        User signUpUser =modelMapper.map(userSignUpRequest,User.class);
-        signUpUser.setRole(Role.CUSTOMER);
-        signUpUser.setPassword(passwordEncoder.encode(userSignUpRequest.getPassword()));
-
-        User savedUser = userRepository.save(signUpUser);
-
-        return modelMapper.map(savedUser,UserResponseDto.class);
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with id: "+id));
     }
 
     @Override
-    public UserLoginResponse login(UserLoginRequest userLoginRequest) {
+    public void updateProfile(ProfileUpdateRequestDto profileUpdateRequestDto) {
+        User user = getCurrentUser();
 
-        User user = userRepository
-                .findByEmail(userLoginRequest.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found" +  userLoginRequest.getEmail()));
+        if(profileUpdateRequestDto.getDateOfBirth() != null) user.setDateOfBirth(profileUpdateRequestDto.getDateOfBirth());
+        if(profileUpdateRequestDto.getGender() != null) user.setGender(profileUpdateRequestDto.getGender());
+        if (profileUpdateRequestDto.getName() != null) user.setName(profileUpdateRequestDto.getName());
 
-        boolean isValid =
-                passwordEncoder.matches(
-                        userLoginRequest.getPassword(),
-                        user.getPassword());
+        userRepository.save(user);
+    }
 
-        if(!isValid) {
-            throw new BadRequestException(
-                    "Invalid password"
-            );        }
+    @Override
+    public UserDto getMyProfile() {
+        User user = getCurrentUser();
+        log.info("Getting the profile for user with id: {}", user.getId());
+        return modelMapper.map(user, UserDto.class);
+    }
 
-        String token = jwtService.generateToken(user);
-
-        UserLoginResponse userLoginResponse = new UserLoginResponse();
-        userLoginResponse.setToken(token);
-
-        return userLoginResponse;
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByEmail(username).orElse(null);
     }
 }

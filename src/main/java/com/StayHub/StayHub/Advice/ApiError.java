@@ -13,9 +13,8 @@ import java.util.List;
 @Builder
 public class ApiError {
 
-     private HttpStatus httpStatus;
-
-     private String errorMessage;
-
+     private HttpStatus status;
+     private String message;
      private List<String> subErrors;
+
 }
