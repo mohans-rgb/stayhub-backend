@@ -1,62 +1,25 @@
-# StayHub 
+StayHub — Hotel Booking Backend
 
-StayHub is a backend system for a hotel booking platform inspired by Airbnb.  
-It is built using **Spring Boot** and includes authentication, booking management, dynamic pricing, and payment integration.
-
----
+A production-ready RESTful backend for a hotel booking platform, built with Spring Boot 4.1 and Java 21. StayHub handles the full guest lifecycle — from hotel discovery and room availability to payment processing and booking management — with role-based access control and dynamic pricing baked in.
 
 
+Features
+
+
+JWT Authentication & Role-Based Authorization — Stateless security with Spring Security; separate access tiers for guests (GUEST) and hotel managers (HOTEL_MANAGER)
+Dynamic Pricing Engine — Decorator-pattern pricing pipeline combining Base, Surge, Occupancy, Urgency, and Holiday strategies to compute real-time room prices
+Real-Time Inventory Management — Pessimistic locking (SELECT ... FOR UPDATE) on inventory rows prevents double-booking under concurrent load
+Stripe Payment Integration — Checkout session initiation, webhook event processing, and automatic refunds on cancellation
+Hotel Search & Filtering — Paginated hotel discovery by city, date range, and room availability using optimized JPQL queries
+Guest Management — Track and associate guests with bookings (supports multiple guests per reservation)
+Global Exception Handling — Centralized @RestControllerAdvice with structured ApiError / ApiResponse wrappers
+OpenAPI / Swagger UI — Auto-generated API docs via SpringDoc
 
 
 
-##  Features
+Tech Stack
 
-###  Authentication & Security
-- JWT-based authentication
-- Role-based access control (User / Admin)
-- Secure endpoints using Spring Security
-
-###  Hotel Management
-- Add / update / manage hotels
-- Room management system
-- Inventory tracking per room
-
-###  Hotel Search & Booking
-- Search hotels by filters
-- Room availability checking
-- Booking creation and status tracking
-
-###  Payment Integration
-- Stripe payment gateway integration
-- Checkout session handling
-- Webhook support for payment confirmation
-
-###  Dynamic Pricing Engine
-Implements Strategy Design Pattern:
-- Surge pricing
-- Holiday pricing
-- Occupancy-based pricing
-- Urgency-based pricing
-
-###  System Design Concepts
-- Clean layered architecture (Controller → Service → Repository)
-- DTO-based communication
-- Strategy Design Pattern for pricing logic
-
----
-
-##  Tech Stack
-
-- Java
-- Spring Boot
-- Spring Security
-- Spring Data JPA
-- MySQL
-- Stripe API
-- JWT
-- Maven
-
----
+LayerTechnologyLanguageJava 21FrameworkSpring Boot 4.1SecuritySpring Security + JWT (JJWT 0.12.6)PersistenceSpring Data JPA + PostgreSQLPaymentsStripe Java SDK 33.1MappingModelMapper 3.2.6BoilerplateLombokAPI DocsSpringDoc OpenAPI (Swagger UI)BuildMaven
 
 
 
