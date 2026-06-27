@@ -1,33 +1,33 @@
-# StayHub 🏨
+# StayHub 
 
 StayHub is a backend system for a hotel booking platform inspired by Airbnb.  
 It is built using **Spring Boot** and includes authentication, booking management, dynamic pricing, and payment integration.
 
 ---
 
-## 🚀 Features
+##  Features
 
-### 🔐 Authentication & Security
+###  Authentication & Security
 - JWT-based authentication
 - Role-based access control (User / Admin)
 - Secure endpoints using Spring Security
 
-### 🏨 Hotel Management
+###  Hotel Management
 - Add / update / manage hotels
 - Room management system
 - Inventory tracking per room
 
-### 🔎 Hotel Search & Booking
+###  Hotel Search & Booking
 - Search hotels by filters
 - Room availability checking
 - Booking creation and status tracking
 
-### 💳 Payment Integration
+###  Payment Integration
 - Stripe payment gateway integration
 - Checkout session handling
 - Webhook support for payment confirmation
 
-### 📈 Dynamic Pricing Engine
+###  Dynamic Pricing Engine
 Implements Strategy Design Pattern:
 - Surge pricing
 - Holiday pricing
@@ -41,7 +41,7 @@ Implements Strategy Design Pattern:
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - Java
 - Spring Boot
